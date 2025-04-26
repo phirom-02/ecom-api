@@ -1,0 +1,18 @@
+services:
+  postgres_ecom_api:
+    image: postgres:latest
+    container_name: postgres_ecom_api
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+      PORT: ${DATABASE_PORT:-5435}
+    ports:
+      - "${DATABASE_PORT:-5435}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_data:
+    driver: local
