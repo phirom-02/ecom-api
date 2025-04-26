@@ -2,6 +2,7 @@ package com.firom.ecom_api.service;
 
 import com.firom.ecom_api.dto.product.AddProductDto;
 import com.firom.ecom_api.dto.product.UpdateProductDto;
+import com.firom.ecom_api.exception.ResourceNotFoundException;
 import com.firom.ecom_api.model.Product;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class ProductService {
         return products.stream()
                 .filter(product -> product.getId() == id)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new ResourceNotFoundException("No product found with ID " + id));
     }
 
     public Product addProduct(AddProductDto addProductPayload) {
@@ -42,7 +43,6 @@ public class ProductService {
 
     public Product updateProduct(Long id, UpdateProductDto updatePayload) {
         Product product = this.getProductById(id);
-        if (product == null) return null;
 
         updatePayload.name().ifPresent(product::setName);
         updatePayload.description().ifPresent(product::setDescription);
