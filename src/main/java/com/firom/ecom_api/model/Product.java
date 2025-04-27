@@ -1,22 +1,23 @@
 package com.firom.ecom_api.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@Entity
 public class Product {
-    private long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Integer id;
+
     private String name;
+
     private String description;
-    private double price;
 
-    public Product() {}
-
-    public Product(Long id, String name, String description, double price) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-    }
+    private Double price;
 }

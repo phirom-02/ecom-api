@@ -1,58 +1,22 @@
 package com.firom.ecom_api.service;
 
-import com.firom.ecom_api.dto.product.AddProductDto;
+import com.firom.ecom_api.dto.product.CreateProductDto;
+import com.firom.ecom_api.dto.product.ProductDto;
 import com.firom.ecom_api.dto.product.UpdateProductDto;
-import com.firom.ecom_api.exception.common.ResourceNotFoundException;
-import com.firom.ecom_api.exception.enums.ErrorCode;
-import com.firom.ecom_api.model.Product;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ProductService {
+public interface ProductService {
 
-    private final List<Product> products = new ArrayList<>(List.of(
-            new Product(1L, "Laptop", "High-end gaming laptop", 1200.00),
-                new Product(2L, "Headphones", "Noise-cancelling headphones", 200.00),
-                new Product(3L, "Smartphone", "Latest Android smartphone", 800.00)
-        ));
+    List<ProductDto> getAllProducts();
 
-    public List<Product> getAllProducts() {
-        return this.products;
-    }
+    ProductDto getProductById(Integer id);
 
-    public Product getProductById(Long id) {
-        return products.stream()
-                .filter(product -> product.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("No product found with ID " + id, ErrorCode.PRODUCT_NOT_FOUND));
-    }
+    ProductDto createProduct(CreateProductDto createProductDto);
 
-    public Product addProduct(AddProductDto addProductPayload) {
-        var newProduct = new Product();
-        newProduct.setId(products.toArray().length);
-        newProduct.setName(addProductPayload.name());
-        newProduct.setDescription(addProductPayload.description());
-        newProduct.setPrice(addProductPayload.price());
+    ProductDto updateProduct(Integer id, UpdateProductDto updateProductDto);
 
-        products.add(newProduct);
-
-        return newProduct;
-    }
-
-    public Product updateProduct(Long id, UpdateProductDto updatePayload) {
-        Product product = this.getProductById(id);
-
-        updatePayload.name().ifPresent(product::setName);
-        updatePayload.description().ifPresent(product::setDescription);
-        updatePayload.price().ifPresent(product::setPrice);
-
-        return product;
-    }
-
-    public boolean deleteProduct(Long id) {
-        return products.removeIf(product -> product.getId() == id);
-    }
+    ProductDto deleteProduct(Integer id);
 }
