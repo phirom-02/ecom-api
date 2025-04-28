@@ -1,6 +1,6 @@
-package com.firom.ecom_api.exception.common;
+package com.firom.ecom_api.common.exceptions;
 
-import com.firom.ecom_api.exception.enums.ErrorCode;
+import com.firom.ecom_api.common.enums.ErrorCode;
 
 public class ResourceNotFoundException extends CustomRuntimeException {
 

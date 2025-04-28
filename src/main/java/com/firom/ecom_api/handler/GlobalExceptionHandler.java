@@ -1,8 +1,10 @@
-package com.firom.ecom_api.exception;
+package com.firom.ecom_api.handler;
 
-import com.firom.ecom_api.exception.common.CustomRuntimeException;
-import com.firom.ecom_api.exception.common.ResourceNotFoundException;
-import com.firom.ecom_api.exception.enums.ErrorCode;
+import com.firom.ecom_api.common.dto.ApiError;
+import com.firom.ecom_api.common.dto.ApiResponse;
+import com.firom.ecom_api.common.exceptions.CustomRuntimeException;
+import com.firom.ecom_api.common.exceptions.ResourceNotFoundException;
+import com.firom.ecom_api.common.enums.ErrorCode;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +22,7 @@ public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleGenericExceptions(Exception e) {
+    public ResponseEntity<ApiResponse<Object>> handleGenericExceptions(Exception e) {
         var error = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 ErrorCode.INTERNAL_SERVER_ERROR,
@@ -29,11 +31,11 @@ public class GlobalExceptionHandler {
 
         log.error(error.toString());
 
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ApiResponseHandler.error(null, error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(CustomRuntimeException.class)
-    public ResponseEntity<ApiError> handleGenericRuntimeExceptions(CustomRuntimeException e) {
+    public ResponseEntity<ApiResponse<Object>> handleGenericRuntimeExceptions(CustomRuntimeException e) {
         var error = new ApiError(
                 HttpStatus.BAD_REQUEST,
                 e.getErrorCode(),
@@ -42,11 +44,11 @@ public class GlobalExceptionHandler {
 
         log.error(error.toString());
 
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return ApiResponseHandler.error(null, error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiError> handleValidationExceptions(MethodArgumentNotValidException e) {
+    public ResponseEntity<ApiResponse<Object>> handleValidationExceptions(MethodArgumentNotValidException e) {
         List<String> descriptions = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -60,19 +62,17 @@ public class GlobalExceptionHandler {
                 Strings.join(descriptions, '\n')
         );
 
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return ApiResponseHandler.error(null, error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException e) {
+    public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(ResourceNotFoundException e) {
         var error = new ApiError(
                 HttpStatus.NOT_FOUND,
                 e.getErrorCode(),
                 e.getStackTrace()
         );
 
-        log.error(error.toString());
-
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return ApiResponseHandler.error(null, error, HttpStatus.NOT_FOUND);
     }
 }

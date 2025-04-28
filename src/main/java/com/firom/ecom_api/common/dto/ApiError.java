@@ -1,26 +1,24 @@
-package com.firom.ecom_api.exception;
+package com.firom.ecom_api.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.firom.ecom_api.exception.enums.ErrorCode;
+import com.firom.ecom_api.common.enums.ErrorCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-import java.time.Instant;
 import java.util.Arrays;
 
 @Setter
 @Getter
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiError {
     private String errorCode;
     private String error;
-    private String message;
     private String trace;
     private String description;
-    private Instant timestamp;
-
-    public  ApiError() {}
+    private String message;
 
     public  ApiError(
             HttpStatus httpStatus,
@@ -29,7 +27,6 @@ public class ApiError {
     ) {
         this.error = httpStatus.getReasonPhrase();
         this.trace = Arrays.toString(trace);
-        this.timestamp = Instant.now();
         this.message = errorCode.getMessage();
         this.errorCode = errorCode.getCode();
         this.description = null;
@@ -43,9 +40,11 @@ public class ApiError {
     ) {
         this.error = httpStatus.getReasonPhrase();
         this.trace = Arrays.toString(trace);
-        this.timestamp = Instant.now();
         this.message = errorCode.getMessage();
         this.errorCode = errorCode.getCode();
         this.description = description;
+    }
+
+    public ApiError(Object o, ApiError error) {
     }
 }

@@ -1,4 +1,4 @@
-package com.firom.ecom_api.exception.enums;
+package com.firom.ecom_api.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
