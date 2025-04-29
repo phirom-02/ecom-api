@@ -1,4 +1,7 @@
 package com.firom.ecom_api.dto.user;
 
-public class LoginUserResponseDto {
+public record LoginUserResponseDto (
+        String token,
+        long expiresIn
+) {
 }
