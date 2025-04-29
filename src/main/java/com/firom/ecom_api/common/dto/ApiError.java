@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Setter
 @Getter
@@ -17,7 +18,7 @@ public class ApiError {
     private String errorCode;
     private String error;
     private String trace;
-    private String description;
+    private List<String> description;
     private String message;
 
     public  ApiError(
@@ -36,7 +37,7 @@ public class ApiError {
             HttpStatus httpStatus,
             ErrorCode errorCode,
             StackTraceElement[] trace,
-            String description
+            List<String> description
     ) {
         this.error = httpStatus.getReasonPhrase();
         this.trace = Arrays.toString(trace);

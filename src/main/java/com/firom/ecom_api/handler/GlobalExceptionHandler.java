@@ -5,7 +5,6 @@ import com.firom.ecom_api.common.dto.ApiResponse;
 import com.firom.ecom_api.common.exceptions.CustomRuntimeException;
 import com.firom.ecom_api.common.exceptions.ResourceNotFoundException;
 import com.firom.ecom_api.common.enums.ErrorCode;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CustomRuntimeException.class)
-    public ResponseEntity<ApiResponse<Object>> handleGenericRuntimeExceptions(CustomRuntimeException e) {
+    public ResponseEntity<ApiResponse<Object>> handleGenericRuntimeExceptions(final CustomRuntimeException e) {
         var error = new ApiError(
                 HttpStatus.BAD_REQUEST,
                 e.getErrorCode(),
@@ -59,7 +58,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 ErrorCode.VALIDATION_ERROR,
                 e.getStackTrace(),
-                Strings.join(descriptions, '\n')
+                descriptions
         );
 
         return ApiResponseHandler.error(null, error, HttpStatus.BAD_REQUEST);
