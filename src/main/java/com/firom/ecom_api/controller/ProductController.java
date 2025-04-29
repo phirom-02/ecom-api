@@ -6,6 +6,7 @@ import com.firom.ecom_api.dto.product.ProductDto;
 import com.firom.ecom_api.dto.product.UpdateProductDto;
 import com.firom.ecom_api.handler.ApiResponseHandler;
 import com.firom.ecom_api.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,12 +35,12 @@ public class ProductController {
     }
     
     @PostMapping
-    public ResponseEntity<ApiResponse<ProductDto>> createProduct(@RequestBody CreateProductDto createProductDto) {
+    public ResponseEntity<ApiResponse<ProductDto>> createProduct(@RequestBody @Valid CreateProductDto createProductDto) {
         return ApiResponseHandler.created(productService.createProduct(createProductDto));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductDto>> updateProduct(@PathVariable Integer id, @RequestBody UpdateProductDto updateProductDto) {
+    public ResponseEntity<ApiResponse<ProductDto>> updateProduct(@PathVariable Integer id, @RequestBody @Valid UpdateProductDto updateProductDto) {
         return ApiResponseHandler.success(productService.updateProduct(id, updateProductDto));
     }
 

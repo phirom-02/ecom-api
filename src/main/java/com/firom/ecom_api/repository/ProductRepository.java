@@ -12,6 +12,4 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Query("select p from Product p")
     ArrayList<Product> findAllProduct();
-
-    Product findFirstById(Integer id);
 }

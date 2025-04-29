@@ -24,7 +24,8 @@ public class ProductMapper {
         return product;
     }
 
-    public static Product updateProductDTOtoEntity(UpdateProductDto updateProductDto, Product product) {
+    public static Product updateProductDTOtoEntity(Integer id, UpdateProductDto updateProductDto, Product product) {
+        product.setId(id);
         updateProductDto.name().ifPresent(product::setName);
         updateProductDto.description().ifPresent(product::setDescription);
         updateProductDto.price().ifPresent(product::setPrice);

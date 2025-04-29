@@ -6,6 +6,7 @@ import com.firom.ecom_api.dto.product.UpdateProductDto;
 import com.firom.ecom_api.common.exceptions.ResourceNotFoundException;
 import com.firom.ecom_api.common.enums.ErrorCode;
 import com.firom.ecom_api.mapper.ProductMapper;
+import com.firom.ecom_api.model.Product;
 import com.firom.ecom_api.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,11 +34,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getProductById(Integer id) {
-        var productDB = productRepository.findFirstById(id);
-        if (productDB == null) {
+        var productDB = productRepository.findById(id);
+        if (productDB.isEmpty()) {
             throw new ResourceNotFoundException("No product found with ID " + id, ErrorCode.PRODUCT_NOT_FOUND);
         }
-        return ProductMapper.toProductDTO(productDB);
+
+        var product = new Product();
+        product.setId(productDB.get().getId());
+        product.setName(productDB.get().getName());
+        product.setPrice(productDB.get().getPrice());
+        product.setDescription(productDB.get().getDescription());
+
+        return ProductMapper.toProductDTO(product);
     }
 
     @Override
@@ -51,6 +59,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto updateProduct(Integer id, UpdateProductDto updateProductDto) {
         var productDB = getProductById(id);
         var updatedProduct = ProductMapper.updateProductDTOtoEntity(
+                id,
                 updateProductDto,
                 ProductMapper.productDtoToEntity(productDB)
         );
