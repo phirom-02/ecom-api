@@ -24,11 +24,12 @@ public class ApiError {
     public  ApiError(
             HttpStatus httpStatus,
             ErrorCode errorCode,
+            String message,
             StackTraceElement[] trace
     ) {
         this.error = httpStatus.getReasonPhrase();
         this.trace = Arrays.toString(trace);
-        this.message = errorCode.getMessage();
+        this.message = message;
         this.errorCode = errorCode.getCode();
         this.description = null;
     }
