@@ -3,6 +3,7 @@ package com.firom.ecom_api.handler;
 import com.firom.ecom_api.common.dto.ApiError;
 import com.firom.ecom_api.common.dto.ApiResponse;
 import com.firom.ecom_api.common.exceptions.CustomRuntimeException;
+import com.firom.ecom_api.common.exceptions.InvalidTokenException;
 import com.firom.ecom_api.common.exceptions.ResourceNotFoundException;
 import com.firom.ecom_api.common.enums.ErrorCode;
 import org.slf4j.Logger;
@@ -15,29 +16,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 
+// TODO: Handle authentication exceptions
+// TODO: Handle {IllegalArgumentException} exceptions
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Object>> handleGenericExceptions(Exception e) {
-        var error = new ApiError(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                ErrorCode.INTERNAL_SERVER_ERROR,
-                e.getStackTrace()
-        );
-
-        log.error(error.toString());
-
-        return ApiResponseHandler.error(null, error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
     @ExceptionHandler(CustomRuntimeException.class)
     public ResponseEntity<ApiResponse<Object>> handleGenericRuntimeExceptions(final CustomRuntimeException e) {
         var error = new ApiError(
                 HttpStatus.BAD_REQUEST,
                 e.getErrorCode(),
+                e.getMessage(),
                 e.getStackTrace()
         );
 
@@ -69,9 +60,36 @@ public class GlobalExceptionHandler {
         var error = new ApiError(
                 HttpStatus.NOT_FOUND,
                 e.getErrorCode(),
+                e.getMessage(),
                 e.getStackTrace()
         );
 
         return ApiResponseHandler.error(null, error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ApiResponse<Object>> handleInvalidTokenException(InvalidTokenException e) {
+        var error = new ApiError(
+                HttpStatus.UNAUTHORIZED,
+                e.getErrorCode(),
+                e.getMessage(),
+                e.getStackTrace()
+        );
+
+        return ApiResponseHandler.error(null, error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Object>> handleGenericExceptions(Exception e) {
+        var error = new ApiError(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ErrorCode.INTERNAL_SERVER_ERROR,
+                ErrorCode.INTERNAL_SERVER_ERROR.getMessage(),
+                e.getStackTrace()
+        );
+
+        log.error(error.toString());
+
+        return ApiResponseHandler.error(null, error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

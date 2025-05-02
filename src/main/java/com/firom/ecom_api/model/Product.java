@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -28,9 +28,9 @@ public class Product {
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
-    private Date createdAt;
+    private Instant createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private Instant updatedAt;
 }

@@ -1,4 +1,4 @@
-package com.firom.ecom_api.dto.user;
+package com.firom.ecom_api.dto.authentication;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

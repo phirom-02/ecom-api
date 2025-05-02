@@ -1,48 +1,59 @@
 package com.firom.ecom_api.controller;
 
 import com.firom.ecom_api.common.dto.ApiResponse;
-import com.firom.ecom_api.dto.user.LoginUserDto;
-import com.firom.ecom_api.dto.user.LoginUserResponseDto;
-import com.firom.ecom_api.dto.user.SignupUserDto;
+import com.firom.ecom_api.dto.authentication.AuthenticationResponseDto;
+import com.firom.ecom_api.dto.authentication.LoginUserDto;
+import com.firom.ecom_api.dto.authentication.RefreshTokenResponseDto;
+import com.firom.ecom_api.dto.authentication.SignupUserDto;
 import com.firom.ecom_api.handler.ApiResponseHandler;
-import com.firom.ecom_api.model.User;
-import com.firom.ecom_api.security.JwtService;
 import com.firom.ecom_api.service.AuthenticationService;
+import com.firom.ecom_api.util.HttpRequestPropertiesUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-    private final JwtService jwtService;
 
     private final AuthenticationService authenticationService;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
-        this.jwtService = jwtService;
+    public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<User>> register(@RequestBody @Valid SignupUserDto signupUserDto) {
-        User registeredUser = authenticationService.signup(signupUserDto);
-
+    public ResponseEntity<ApiResponse<AuthenticationResponseDto>> register(@RequestBody @Valid SignupUserDto signupUserDto) {
+        AuthenticationResponseDto registeredUser = authenticationService.signup(signupUserDto);
         return ApiResponseHandler.created(registeredUser);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginUserResponseDto>> authenticate(@RequestBody @Valid LoginUserDto loginUserDto) {
-        User authenticatedUser = authenticationService.login(loginUserDto);
+    @PostMapping("/signin")
+    public ResponseEntity<ApiResponse<AuthenticationResponseDto>> signin(@RequestBody @Valid LoginUserDto loginUserDto) {
+        AuthenticationResponseDto authenticatedUser = authenticationService.login(loginUserDto);
+        return ApiResponseHandler.success(authenticatedUser);
+    }
 
-        String jwtToken = jwtService.generateToken(authenticatedUser);
+    @PostMapping("/signout")
+    public ResponseEntity<ApiResponse<Object>> signout(HttpServletRequest request) {
+        String refreshToken = HttpRequestPropertiesUtils.extractBearerToken(request);
+        authenticationService.signout(refreshToken);
+        return ApiResponseHandler.success(null);
+    }
 
-        var loginResponse = new LoginUserResponseDto(jwtToken, jwtService.getExpirationTime());
+    @PostMapping("/signout-all-devices")
+    public ResponseEntity<ApiResponse<Object>> signoutAllDevices(HttpServletRequest request) {
+        String refreshToken = HttpRequestPropertiesUtils.extractBearerToken(request);
+        authenticationService.signoutAllDevices(refreshToken);
+        return ApiResponseHandler.success(null);
+    }
 
-        return ApiResponseHandler.success(loginResponse);
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<RefreshTokenResponseDto>> refreshToken(HttpServletRequest request) {
+        String refreshToken = HttpRequestPropertiesUtils.extractBearerToken(request);
+        RefreshTokenResponseDto refreshTokenResponseDto = authenticationService.refresh(refreshToken);
+        return ApiResponseHandler.success(refreshTokenResponseDto);
     }
 }

@@ -1,5 +1,6 @@
 package com.firom.ecom_api.security;
 
+import com.firom.ecom_api.common.enums.TokenType;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,11 +13,11 @@ public interface JwtService {
 
      <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
 
-     String generateToken(UserDetails userDetails);
+     TokenType extractTokenType(String token);
 
-     String generateToken(Map<String, Object> extraClaims, UserDetails userDetails);
+     String generateAccessToken(CustomUserDetails userDetails);
 
-     long getExpirationTime();
+     String generateRefreshToken(CustomUserDetails userDetails);
 
-     boolean isTokenValid(String token, UserDetails userDetails);
+     boolean isTokenValid(String token, CustomUserDetails userDetails);
 }

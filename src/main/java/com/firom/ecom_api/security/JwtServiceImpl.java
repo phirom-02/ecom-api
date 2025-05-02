@@ -1,5 +1,6 @@
 package com.firom.ecom_api.security;
 
+import com.firom.ecom_api.common.enums.TokenType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -14,34 +15,58 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Service
+@Service()
 public class JwtServiceImpl implements JwtService {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    @Value("${jwt.expiration-time}")
-    private long jwtExpiration;
+    @Value("${jwt.refresh-token-expiration-time}")
+    private long refreshTokenExpirationTime;
 
+    @Value("${jwt.access-token-expiration-time}")
+    private long jwtAccessExpirationTime;
+
+    @Override
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
+    @Override
+    public String generateAccessToken(CustomUserDetails userDetails) {
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("type", TokenType.ACCESS.getValue());
+        return buildToken(claims, userDetails, jwtAccessExpirationTime);
+    }
+
+    @Override
+    public String generateRefreshToken(CustomUserDetails userDetails) {
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("type", TokenType.REQUEST.getValue());
+        return buildToken(claims, userDetails, refreshTokenExpirationTime);
+    }
+
+    @Override
+    public boolean isTokenValid(String token, CustomUserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    @Override
+    public TokenType extractTokenType(String token) {
+        final Claims claims = extractAllClaims(token);
+        String var = claims.get("type", String.class);
+        return TokenType.valueOf(var);
+    }
+
+    @Override
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
-    }
-
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
-    }
-
     private String buildToken(
             Map<String, Object> extraClaims,
-            UserDetails userDetails,
+            CustomUserDetails userDetails,
             long expiration
     ) {
         return Jwts
@@ -52,15 +77,6 @@ public class JwtServiceImpl implements JwtService {
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey())
                 .compact();
-    }
-
-    public long getExpirationTime() {
-        return jwtExpiration;
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
