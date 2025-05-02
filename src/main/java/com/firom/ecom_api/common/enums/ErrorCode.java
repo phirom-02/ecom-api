@@ -14,6 +14,7 @@ public enum ErrorCode {
     VALIDATION_ERROR("1004", "Validation Error"),
 
     // Auth error codes: 2000 - 2999
+    INVALID_TOKEN("2000", "Invalid Token"),
 
     // Product error codes: 3000 - 3999
     PRODUCT_NOT_FOUND("3000", "Product not found");
