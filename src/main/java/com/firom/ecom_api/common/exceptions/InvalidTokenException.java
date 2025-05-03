@@ -11,4 +11,8 @@ public class InvalidTokenException extends CustomRuntimeException {
     public InvalidTokenException() {
         super("Invalid token", ErrorCode.UNAUTHORIZED);
     }
+
+    public InvalidTokenException(String message) {
+        super(message, ErrorCode.UNAUTHORIZED);
+    }
 }
