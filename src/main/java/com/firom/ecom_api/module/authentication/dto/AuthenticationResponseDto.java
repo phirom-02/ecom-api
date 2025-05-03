@@ -1,4 +1,4 @@
-package com.firom.ecom_api.dto.authentication;
+package com.firom.ecom_api.module.authentication.dto;
 
 import com.firom.ecom_api.security.CustomUserDetails;
 

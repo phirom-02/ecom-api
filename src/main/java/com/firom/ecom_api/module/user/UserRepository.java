@@ -1,6 +1,5 @@
-package com.firom.ecom_api.repository;
+package com.firom.ecom_api.module.user;
 
-import com.firom.ecom_api.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,17 +1,17 @@
-package com.firom.ecom_api.service;
+package com.firom.ecom_api.module.authentication;
 
 import com.firom.ecom_api.common.enums.TokenType;
 import com.firom.ecom_api.common.exceptions.InvalidTokenException;
-import com.firom.ecom_api.dto.authentication.AuthenticationResponseDto;
-import com.firom.ecom_api.dto.authentication.LoginUserDto;
-import com.firom.ecom_api.dto.authentication.RefreshTokenResponseDto;
-import com.firom.ecom_api.dto.authentication.SignupUserDto;
-import com.firom.ecom_api.mapper.AuthenticationMapper;
-import com.firom.ecom_api.model.RefreshToken;
-import com.firom.ecom_api.model.User;
-import com.firom.ecom_api.repository.UserRepository;
+import com.firom.ecom_api.module.authentication.dto.AuthenticationResponseDto;
+import com.firom.ecom_api.module.authentication.dto.LoginUserDto;
+import com.firom.ecom_api.module.authentication.dto.RefreshTokenResponseDto;
+import com.firom.ecom_api.module.authentication.dto.SignupUserDto;
+import com.firom.ecom_api.module.product.RefreshToken;
+import com.firom.ecom_api.module.user.User;
+import com.firom.ecom_api.module.user.UserRepository;
 import com.firom.ecom_api.security.CustomUserDetails;
 import com.firom.ecom_api.security.JwtService;
+import com.firom.ecom_api.module.refreshToken.RefreshTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

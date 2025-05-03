@@ -1,21 +1,16 @@
-package com.firom.ecom_api.service;
+package com.firom.ecom_api.module.refreshToken;
 
 import com.firom.ecom_api.common.enums.TokenStatus;
 import com.firom.ecom_api.common.exceptions.InvalidTokenException;
-import com.firom.ecom_api.model.RefreshToken;
-import com.firom.ecom_api.model.User;
-import com.firom.ecom_api.repository.RefreshTokenRepository;
-import com.firom.ecom_api.repository.UserRepository;
+import com.firom.ecom_api.module.product.RefreshToken;
+import com.firom.ecom_api.module.user.User;
 import com.firom.ecom_api.security.CustomUserDetails;
 import com.firom.ecom_api.security.JwtService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {

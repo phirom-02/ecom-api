@@ -1,8 +1,7 @@
 package com.firom.ecom_api.security;
 
-import com.firom.ecom_api.model.User;
-import com.firom.ecom_api.repository.UserRepository;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.firom.ecom_api.module.user.User;
+import com.firom.ecom_api.module.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

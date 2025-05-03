@@ -1,12 +1,11 @@
-package com.firom.ecom_api.controller;
+package com.firom.ecom_api.module.authentication;
 
 import com.firom.ecom_api.common.dto.ApiResponse;
-import com.firom.ecom_api.dto.authentication.AuthenticationResponseDto;
-import com.firom.ecom_api.dto.authentication.LoginUserDto;
-import com.firom.ecom_api.dto.authentication.RefreshTokenResponseDto;
-import com.firom.ecom_api.dto.authentication.SignupUserDto;
+import com.firom.ecom_api.module.authentication.dto.AuthenticationResponseDto;
+import com.firom.ecom_api.module.authentication.dto.LoginUserDto;
+import com.firom.ecom_api.module.authentication.dto.RefreshTokenResponseDto;
+import com.firom.ecom_api.module.authentication.dto.SignupUserDto;
 import com.firom.ecom_api.handler.ApiResponseHandler;
-import com.firom.ecom_api.service.AuthenticationService;
 import com.firom.ecom_api.util.HttpRequestPropertiesUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

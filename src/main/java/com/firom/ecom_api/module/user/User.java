@@ -1,4 +1,4 @@
-package com.firom.ecom_api.model;
+package com.firom.ecom_api.module.user;
 
 import jakarta.persistence.*;
 import lombok.*;

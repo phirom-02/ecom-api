@@ -1,7 +1,7 @@
-package com.firom.ecom_api.service;
+package com.firom.ecom_api.module.refreshToken;
 
-import com.firom.ecom_api.model.RefreshToken;
-import com.firom.ecom_api.model.User;
+import com.firom.ecom_api.module.product.RefreshToken;
+import com.firom.ecom_api.module.user.User;
 
 public interface RefreshTokenService {
 

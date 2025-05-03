@@ -1,6 +1,6 @@
 package com.firom.ecom_api.security;
 
-import com.firom.ecom_api.model.User;
+import com.firom.ecom_api.module.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

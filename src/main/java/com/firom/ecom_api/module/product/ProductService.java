@@ -1,8 +1,8 @@
-package com.firom.ecom_api.service;
+package com.firom.ecom_api.module.product;
 
-import com.firom.ecom_api.dto.product.CreateProductDto;
-import com.firom.ecom_api.dto.product.ProductDto;
-import com.firom.ecom_api.dto.product.UpdateProductDto;
+import com.firom.ecom_api.module.product.dto.CreateProductDto;
+import com.firom.ecom_api.module.product.dto.ProductDto;
+import com.firom.ecom_api.module.product.dto.UpdateProductDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

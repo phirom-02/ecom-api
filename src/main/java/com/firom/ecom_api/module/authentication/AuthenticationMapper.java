@@ -1,8 +1,8 @@
-package com.firom.ecom_api.mapper;
+package com.firom.ecom_api.module.authentication;
 
 
-import com.firom.ecom_api.dto.authentication.AuthenticationResponseDto;
-import com.firom.ecom_api.model.User;
+import com.firom.ecom_api.module.authentication.dto.AuthenticationResponseDto;
+import com.firom.ecom_api.module.user.User;
 import com.firom.ecom_api.security.CustomUserDetails;
 
 public class AuthenticationMapper {

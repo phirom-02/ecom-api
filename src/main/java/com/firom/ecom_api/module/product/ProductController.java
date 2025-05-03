@@ -1,14 +1,11 @@
-package com.firom.ecom_api.controller;
+package com.firom.ecom_api.module.product;
 
 import com.firom.ecom_api.common.dto.ApiResponse;
-import com.firom.ecom_api.dto.product.CreateProductDto;
-import com.firom.ecom_api.dto.product.ProductDto;
-import com.firom.ecom_api.dto.product.UpdateProductDto;
+import com.firom.ecom_api.module.product.dto.CreateProductDto;
+import com.firom.ecom_api.module.product.dto.ProductDto;
+import com.firom.ecom_api.module.product.dto.UpdateProductDto;
 import com.firom.ecom_api.handler.ApiResponseHandler;
-import com.firom.ecom_api.service.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

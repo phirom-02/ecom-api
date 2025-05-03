@@ -1,9 +1,8 @@
-package com.firom.ecom_api.mapper;
+package com.firom.ecom_api.module.product;
 
-import com.firom.ecom_api.dto.product.CreateProductDto;
-import com.firom.ecom_api.dto.product.ProductDto;
-import com.firom.ecom_api.dto.product.UpdateProductDto;
-import com.firom.ecom_api.model.Product;
+import com.firom.ecom_api.module.product.dto.CreateProductDto;
+import com.firom.ecom_api.module.product.dto.ProductDto;
+import com.firom.ecom_api.module.product.dto.UpdateProductDto;
 
 public class ProductMapper {
 

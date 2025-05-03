@@ -1,14 +1,10 @@
-package com.firom.ecom_api.service;
+package com.firom.ecom_api.module.product;
 
-import com.firom.ecom_api.dto.product.CreateProductDto;
-import com.firom.ecom_api.dto.product.ProductDto;
-import com.firom.ecom_api.dto.product.UpdateProductDto;
+import com.firom.ecom_api.module.product.dto.CreateProductDto;
+import com.firom.ecom_api.module.product.dto.ProductDto;
+import com.firom.ecom_api.module.product.dto.UpdateProductDto;
 import com.firom.ecom_api.common.exceptions.ResourceNotFoundException;
 import com.firom.ecom_api.common.enums.ErrorCode;
-import com.firom.ecom_api.mapper.ProductMapper;
-import com.firom.ecom_api.model.Product;
-import com.firom.ecom_api.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

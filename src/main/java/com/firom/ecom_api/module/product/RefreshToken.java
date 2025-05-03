@@ -1,6 +1,7 @@
-package com.firom.ecom_api.model;
+package com.firom.ecom_api.module.product;
 
 import com.firom.ecom_api.common.enums.TokenStatus;
+import com.firom.ecom_api.module.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

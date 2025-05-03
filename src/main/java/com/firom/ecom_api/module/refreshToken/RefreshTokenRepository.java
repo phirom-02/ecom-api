@@ -1,7 +1,7 @@
-package com.firom.ecom_api.repository;
+package com.firom.ecom_api.module.refreshToken;
 
-import com.firom.ecom_api.model.RefreshToken;
-import com.firom.ecom_api.model.User;
+import com.firom.ecom_api.module.product.RefreshToken;
+import com.firom.ecom_api.module.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

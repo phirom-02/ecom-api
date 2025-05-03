@@ -1,4 +1,4 @@
-package com.firom.ecom_api.dto.product;
+package com.firom.ecom_api.module.product.dto;
 
 public record ProductDto (
     Integer id,
