@@ -2,92 +2,99 @@ package com.firom.ecom_api.module.authentication;
 
 import com.firom.ecom_api.common.enums.TokenType;
 import com.firom.ecom_api.common.exceptions.InvalidTokenException;
-import com.firom.ecom_api.module.authentication.dto.AuthenticationResponseDto;
-import com.firom.ecom_api.module.authentication.dto.LoginUserDto;
+import com.firom.ecom_api.module.authentication.dto.SigninResponseDto;
+import com.firom.ecom_api.module.authentication.dto.SigninDto;
 import com.firom.ecom_api.module.authentication.dto.RefreshTokenResponseDto;
-import com.firom.ecom_api.module.authentication.dto.SignupUserDto;
+import com.firom.ecom_api.module.authentication.dto.SignupResponseDto;
 import com.firom.ecom_api.module.product.RefreshToken;
+import com.firom.ecom_api.module.user.CustomUserDetails;
 import com.firom.ecom_api.module.user.User;
-import com.firom.ecom_api.module.user.UserRepository;
-import com.firom.ecom_api.security.CustomUserDetails;
+import com.firom.ecom_api.module.user.UserMapper;
+import com.firom.ecom_api.module.user.UserService;
+import com.firom.ecom_api.module.user.dto.SaveUserDto;
 import com.firom.ecom_api.security.JwtService;
 import com.firom.ecom_api.module.refreshToken.RefreshTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private final UserRepository userRepository;
-
-    private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
 
+    private final UserService userService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
 
     public AuthenticationServiceImpl(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager,
+            UserService userService,
             JwtService jwtService,
             RefreshTokenService  refreshTokenService
     ) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
     }
 
     @Override
-    public AuthenticationResponseDto signup(SignupUserDto signupUserDto) {
-        // Create a new User object
-        User user = new User();
-        user.setUsername(signupUserDto.username());
-        user.setPassword(passwordEncoder.encode(signupUserDto.password()));
-        user.setEmail(signupUserDto.email());
-
+    public SignupResponseDto signup(SaveUserDto saveUserDto) {
         // Save user
-        User savedUser = userRepository.save(user);
+        User savedUser = userService.saveUser(saveUserDto);
         // Convert to CustomUserDetails object
-        CustomUserDetails userDetails = AuthenticationMapper.toCustomUserDetails(savedUser);
+        CustomUserDetails userDetails = UserMapper.usertoCustomUserDetails(savedUser);
 
         // Generate a new refresh token
         RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(savedUser);
         String refreshToken = newRefreshToken.getToken();
         // Generate a new access token
         String accessToken = jwtService.generateAccessToken(userDetails);
+        // Generate a new token for user verification
+        String verifyToken = jwtService.generateToken(TokenType.VERIFY, userDetails);
 
-        return AuthenticationMapper.toAuthenticationResponse(accessToken, refreshToken, userDetails);
+        return AuthenticationMapper.toSignupResponseDto(accessToken, refreshToken, verifyToken, userDetails);
     }
 
     @Override
-    public AuthenticationResponseDto login(LoginUserDto loginUserDto) {
+    public void verifyAccount(String token) {
+        // Check if token has type of VERIFY
+        TokenType type = jwtService.extractTokenType(token);
+        if(type != TokenType.VERIFY) {
+            throw new InvalidTokenException();
+        }
+        String username = jwtService.extractUsername(token);
+
+        // Get user from DB
+        User user = userService.findUserByUsername(username);
+        // Verify the user
+        userService.verifyUser(user);
+    }
+
+    @Override
+    public SigninResponseDto login(SigninDto signinDto) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginUserDto.username(),
-                        loginUserDto.password()
+                        signinDto.username(),
+                        signinDto.password()
                 )
         );
 
         // Find user by email
-        var user = userRepository.findUserByEmail(loginUserDto.email())
-                .orElseThrow(() -> new UsernameNotFoundException(loginUserDto.email()));
+        User receivedUser = userService.findUserByEmail(signinDto.email());
+
         // Convert to CustomUserDetails object
-        var userDetails = AuthenticationMapper.toCustomUserDetails(user);
+        CustomUserDetails userDetails = UserMapper.usertoCustomUserDetails(receivedUser);
 
         // Generate a new refresh token
-        RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user);
+        RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(receivedUser);
         String refreshToken = newRefreshToken.getToken();
         // Generate a new access token
         String accessToken = jwtService.generateAccessToken(userDetails);
 
-        return AuthenticationMapper.toAuthenticationResponse(accessToken, refreshToken, userDetails);
+        return AuthenticationMapper.toLoginResponseDto(accessToken, refreshToken, userDetails);
     }
 
     @Override
@@ -110,9 +117,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public RefreshTokenResponseDto refresh(String token) {
-        // Check if token has type of
+        // Check if token has type of REFRESH
         TokenType type = jwtService.extractTokenType(token);
-        if(type != TokenType.REQUEST) {
+        if(type != TokenType.REFRESH) {
             throw new InvalidTokenException();
         }
         // Validate the refresh token (check expiry and revocation)
@@ -120,7 +127,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // Get the user associated with the refresh token
         User user = receivedToken.getUser();
-        var userDetails = AuthenticationMapper.toCustomUserDetails(user);
+        CustomUserDetails userDetails = UserMapper.usertoCustomUserDetails(user);
 
         // Rotate the refresh token (invalidate the old one and generate a new one)
         RefreshToken newRefreshToken = refreshTokenService.rotateRefreshToken(receivedToken, user);

@@ -1,11 +1,12 @@
 package com.firom.ecom_api.module.authentication;
 
 import com.firom.ecom_api.common.dto.ApiResponse;
-import com.firom.ecom_api.module.authentication.dto.AuthenticationResponseDto;
-import com.firom.ecom_api.module.authentication.dto.LoginUserDto;
+import com.firom.ecom_api.module.authentication.dto.SigninResponseDto;
+import com.firom.ecom_api.module.authentication.dto.SigninDto;
 import com.firom.ecom_api.module.authentication.dto.RefreshTokenResponseDto;
-import com.firom.ecom_api.module.authentication.dto.SignupUserDto;
 import com.firom.ecom_api.handler.ApiResponseHandler;
+import com.firom.ecom_api.module.authentication.dto.SignupResponseDto;
+import com.firom.ecom_api.module.user.dto.SaveUserDto;
 import com.firom.ecom_api.util.HttpRequestPropertiesUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -24,14 +25,20 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<AuthenticationResponseDto>> register(@RequestBody @Valid SignupUserDto signupUserDto) {
-        AuthenticationResponseDto registeredUser = authenticationService.signup(signupUserDto);
+    public ResponseEntity<ApiResponse<SignupResponseDto>> register(@RequestBody @Valid SaveUserDto saveUserDto) {
+        SignupResponseDto registeredUser = authenticationService.signup(saveUserDto);
         return ApiResponseHandler.created(registeredUser);
     }
 
+    @GetMapping("/verify")
+    public ResponseEntity<ApiResponse<Object>> verifySignup(@RequestParam("token") String token) {
+        authenticationService.verifyAccount(token);
+        return ApiResponseHandler.success(null);
+    }
+
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponse<AuthenticationResponseDto>> signin(@RequestBody @Valid LoginUserDto loginUserDto) {
-        AuthenticationResponseDto authenticatedUser = authenticationService.login(loginUserDto);
+    public ResponseEntity<ApiResponse<SigninResponseDto>> signin(@RequestBody @Valid SigninDto loginUserDto) {
+        SigninResponseDto authenticatedUser = authenticationService.login(loginUserDto);
         return ApiResponseHandler.success(authenticatedUser);
     }
 

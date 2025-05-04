@@ -1,12 +1,12 @@
 package com.firom.ecom_api.security;
 
 import com.firom.ecom_api.common.enums.TokenType;
+import com.firom.ecom_api.module.user.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -41,7 +41,14 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateRefreshToken(CustomUserDetails userDetails) {
         HashMap<String, Object> claims = new HashMap<>();
-        claims.put("type", TokenType.REQUEST.getValue());
+        claims.put("type", TokenType.REFRESH.getValue());
+        return buildToken(claims, userDetails, refreshTokenExpirationTime);
+    }
+
+    @Override
+    public String generateToken(TokenType type, CustomUserDetails userDetails) {
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("type", type.getValue());
         return buildToken(claims, userDetails, refreshTokenExpirationTime);
     }
 

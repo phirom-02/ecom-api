@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
+// TODO: implement check if user account verified
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,6 +28,9 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private boolean isVerfied;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

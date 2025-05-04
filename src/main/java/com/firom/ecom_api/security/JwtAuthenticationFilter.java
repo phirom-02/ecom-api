@@ -1,5 +1,9 @@
 package com.firom.ecom_api.security;
 
+import com.firom.ecom_api.common.enums.ErrorCode;
+import com.firom.ecom_api.common.exceptions.CustomAuthenticationException;
+import com.firom.ecom_api.module.user.CustomUserDetails;
+import com.firom.ecom_api.module.user.CustomUserDetailsService;
 import com.firom.ecom_api.util.HttpRequestPropertiesUtils;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -12,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
@@ -19,18 +24,18 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-//    private final HandlerExceptionResolver handlerExceptionResolver;
+     private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 
     public JwtAuthenticationFilter(
             JwtService jwtService,
-            CustomUserDetailsService customUserDetailsService
-//            HandlerExceptionResolver handlerExceptionResolver
+            CustomUserDetailsService customUserDetailsService,
+         HandlerExceptionResolver handlerExceptionResolver
     ) {
         this.jwtService = jwtService;
         this.userDetailsService = customUserDetailsService;
-//        this.handlerExceptionResolver = handlerExceptionResolver;
+        this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
     @Override
@@ -38,9 +43,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @Nonnull HttpServletRequest request,
             @Nonnull HttpServletResponse response,
             @Nonnull FilterChain filterChain
-    ) throws ServletException, IOException {
+    ) {
 
-//        try {
+        try {
+
             final String jwtToken = HttpRequestPropertiesUtils.extractBearerToken(request);
             if (jwtToken == null) {
                 filterChain.doFilter(request, response);
@@ -57,10 +63,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authenticateUser(username, jwtToken, request);
             }
 
+            if (!isAccountVerified()) {
+                throw new CustomAuthenticationException(ErrorCode.ACCOUNT_NOT_VERIFIED);
+            }
+
             filterChain.doFilter(request, response);
-//        } catch (Exception exception) {
-//            handlerExceptionResolver.resolveException(request, response, null, exception);
-//        }
+        } catch (Exception e) {
+            handlerExceptionResolver.resolveException(request, response, null, e);
+        }
     }
 
     private void authenticateUser(String username, String token, HttpServletRequest request) {
@@ -81,5 +91,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .getContext()
                     .setAuthentication(authenticationToken);
         }
+    }
+
+    private boolean isAccountVerified() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof CustomUserDetails customUserDetails) {
+                return customUserDetails.user().isVerfied();
+            }
+        }
+        return false;
     }
 }

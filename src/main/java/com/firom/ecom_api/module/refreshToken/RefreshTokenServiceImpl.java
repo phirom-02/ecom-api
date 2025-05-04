@@ -3,8 +3,9 @@ package com.firom.ecom_api.module.refreshToken;
 import com.firom.ecom_api.common.enums.TokenStatus;
 import com.firom.ecom_api.common.exceptions.InvalidTokenException;
 import com.firom.ecom_api.module.product.RefreshToken;
+import com.firom.ecom_api.module.user.CustomUserDetails;
 import com.firom.ecom_api.module.user.User;
-import com.firom.ecom_api.security.CustomUserDetails;
+import com.firom.ecom_api.module.user.UserMapper;
 import com.firom.ecom_api.security.JwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public RefreshToken createRefreshToken(User user) {
-        CustomUserDetails userDetails = new CustomUserDetails(user);
+        CustomUserDetails userDetails = UserMapper.usertoCustomUserDetails(user);
         String token = jwtService.generateRefreshToken(userDetails);
 
         RefreshToken refreshToken = new RefreshToken();

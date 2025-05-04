@@ -1,15 +1,18 @@
 package com.firom.ecom_api.module.authentication;
 
-import com.firom.ecom_api.module.authentication.dto.AuthenticationResponseDto;
-import com.firom.ecom_api.module.authentication.dto.LoginUserDto;
+import com.firom.ecom_api.module.authentication.dto.SigninResponseDto;
+import com.firom.ecom_api.module.authentication.dto.SigninDto;
 import com.firom.ecom_api.module.authentication.dto.RefreshTokenResponseDto;
-import com.firom.ecom_api.module.authentication.dto.SignupUserDto;
+import com.firom.ecom_api.module.authentication.dto.SignupResponseDto;
+import com.firom.ecom_api.module.user.dto.SaveUserDto;
 
 public interface AuthenticationService {
 
-    AuthenticationResponseDto signup(SignupUserDto signupUserDto);
+    SignupResponseDto signup(SaveUserDto saveUserDto);
 
-    AuthenticationResponseDto login(LoginUserDto loginUserDto);
+    void verifyAccount(String token);
+
+    SigninResponseDto login(SigninDto loginUserDto);
 
     void signout(String refreshToken);
 

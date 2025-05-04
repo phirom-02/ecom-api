@@ -1,17 +1,17 @@
 package com.firom.ecom_api.module.authentication;
 
 
-import com.firom.ecom_api.module.authentication.dto.AuthenticationResponseDto;
-import com.firom.ecom_api.module.user.User;
-import com.firom.ecom_api.security.CustomUserDetails;
+import com.firom.ecom_api.module.authentication.dto.SigninResponseDto;
+import com.firom.ecom_api.module.authentication.dto.SignupResponseDto;
+import com.firom.ecom_api.module.user.CustomUserDetails;
 
 public class AuthenticationMapper {
 
-    public static AuthenticationResponseDto toAuthenticationResponse(String accessToken, String refreshToken, CustomUserDetails userDetails) {
-        return new AuthenticationResponseDto(accessToken, refreshToken, userDetails);
+    public static SigninResponseDto toLoginResponseDto(String accessToken, String refreshToken, CustomUserDetails userDetails) {
+        return new SigninResponseDto(accessToken, refreshToken, userDetails);
     }
 
-    public static CustomUserDetails toCustomUserDetails(User user) {
-        return new CustomUserDetails(user);
+    public static SignupResponseDto toSignupResponseDto(String accessToken, String refreshToken, String verifyToken, CustomUserDetails userDetails) {
+        return new SignupResponseDto(accessToken, refreshToken, verifyToken, userDetails);
     }
 }
