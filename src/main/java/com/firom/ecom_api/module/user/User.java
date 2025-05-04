@@ -7,7 +7,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
-// TODO: implement check if user account verified
 @Getter
 @Setter
 @NoArgsConstructor

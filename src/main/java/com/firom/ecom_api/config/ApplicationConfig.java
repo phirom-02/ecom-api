@@ -1,6 +1,6 @@
 package com.firom.ecom_api.config;
 
-import com.firom.ecom_api.security.CustomUserDetailsService;
+import com.firom.ecom_api.module.user.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

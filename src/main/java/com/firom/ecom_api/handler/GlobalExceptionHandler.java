@@ -2,6 +2,7 @@ package com.firom.ecom_api.handler;
 
 import com.firom.ecom_api.common.dto.ApiError;
 import com.firom.ecom_api.common.dto.ApiResponse;
+import com.firom.ecom_api.common.exceptions.CustomAuthenticationException;
 import com.firom.ecom_api.common.exceptions.CustomRuntimeException;
 import com.firom.ecom_api.common.exceptions.InvalidTokenException;
 import com.firom.ecom_api.common.exceptions.ResourceNotFoundException;
@@ -52,9 +53,12 @@ public class GlobalExceptionHandler {
                 descriptions
         );
 
+        log.error(error.toString());
+
         return ApiResponseHandler.error(null, error, HttpStatus.BAD_REQUEST);
     }
 
+    // ------------------------------------- Authentication -------------------------------------
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(ResourceNotFoundException e) {
         var error = new ApiError(
@@ -63,6 +67,8 @@ public class GlobalExceptionHandler {
                 e.getMessage(),
                 e.getStackTrace()
         );
+
+        log.error(error.toString());
 
         return ApiResponseHandler.error(null, error, HttpStatus.NOT_FOUND);
     }
@@ -75,6 +81,20 @@ public class GlobalExceptionHandler {
                 e.getMessage(),
                 e.getStackTrace()
         );
+
+        return ApiResponseHandler.error(null, error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(CustomAuthenticationException.class)
+    public ResponseEntity<ApiResponse<Object>> handleAuthenticationException(CustomAuthenticationException e) {
+        var error = new ApiError(
+                HttpStatus.UNAUTHORIZED,
+                e.getErrorCode(),
+                e.getMessage(),
+                e.getStackTrace()
+        );
+
+        log.error(error.toString());
 
         return ApiResponseHandler.error(null, error, HttpStatus.UNAUTHORIZED);
     }

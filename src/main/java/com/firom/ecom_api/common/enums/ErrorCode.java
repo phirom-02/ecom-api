@@ -13,11 +13,16 @@ public enum ErrorCode {
     UNAUTHORIZED("1003", "Unauthorized"),
     VALIDATION_ERROR("1004", "Validation Error"),
 
-    // Auth error codes: 2000 - 2999
+    // Auth and Account error codes: 2000 - 2999
     INVALID_TOKEN("2000", "Invalid Token"),
+    ACCOUNT_NOT_VERIFIED("2001", "Account Not Verified"),
 
-    // Product error codes: 3000 - 3999
-    PRODUCT_NOT_FOUND("3000", "Product not found");
+    // User error codes: 3000 - 3999
+    USER_NOT_FOUND("3000", "User Not Found"),
+    USER_NOT_VERIFIED("3001", "User Not Verified"),
+
+    // Product error codes: 4000 - 4999
+    PRODUCT_NOT_FOUND("4000", "Product not found");
 
 
     private final String code;

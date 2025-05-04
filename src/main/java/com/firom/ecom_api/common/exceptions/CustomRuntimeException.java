@@ -9,6 +9,11 @@ import lombok.Setter;
 public class CustomRuntimeException extends RuntimeException {
     ErrorCode errorCode;
 
+    public CustomRuntimeException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+    }
+
     public CustomRuntimeException(String message, ErrorCode errorCode) {
         super(message);
         this.errorCode = errorCode;
