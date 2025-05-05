@@ -7,6 +7,8 @@ import com.firom.ecom_api.common.exceptions.CustomRuntimeException;
 import com.firom.ecom_api.common.exceptions.InvalidTokenException;
 import com.firom.ecom_api.common.exceptions.ResourceNotFoundException;
 import com.firom.ecom_api.common.enums.ErrorCode;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -58,7 +60,6 @@ public class GlobalExceptionHandler {
         return ApiResponseHandler.error(null, error, HttpStatus.BAD_REQUEST);
     }
 
-    // ------------------------------------- Authentication -------------------------------------
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(ResourceNotFoundException e) {
         var error = new ApiError(
@@ -85,6 +86,27 @@ public class GlobalExceptionHandler {
         return ApiResponseHandler.error(null, error, HttpStatus.UNAUTHORIZED);
     }
 
+    // ------------------------------------- JWT -------------------------------------
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ApiResponse<Object>> handleJwtException(JwtException e) {
+        ApiError error = new ApiError(
+                HttpStatus.UNAUTHORIZED,
+                ErrorCode.INVALID_TOKEN,
+                e.getMessage(),
+                e.getStackTrace()
+        );
+
+        if(e instanceof ExpiredJwtException) {
+            ErrorCode errorCode = ErrorCode.EXPIRED_TOKEN;
+            error.setMessage(errorCode.getMessage());
+            error.setErrorCode(errorCode.getCode());
+            error.setError(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        }
+
+        return ApiResponseHandler.error(null, error, HttpStatus.UNAUTHORIZED);
+    }
+
+    // ------------------------------------- Authentication -------------------------------------
     @ExceptionHandler(CustomAuthenticationException.class)
     public ResponseEntity<ApiResponse<Object>> handleAuthenticationException(CustomAuthenticationException e) {
         var error = new ApiError(

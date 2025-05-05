@@ -13,6 +13,30 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: always
 
+  mail_ecom_api:
+    image: axllent/mailpit
+    container_name: mailpit_ecom_api
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI for interactions
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: ecom-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${DATABASE_URL}
+      SPRING_DATASOURCE_USERNAME: ${DATABASE_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      SPRING_MAIL_HOST: mail_ecom_api
+      SPRING_MAIL_PORT: 1025
+    depends_on:
+      - postgres_ecom_api
+      - mail_ecom_api
+    restart: unless-stopped
+
 volumes:
   postgres_data:
     driver: local
